@@ -36,7 +36,11 @@ async function loadWords() {
         const resp = await fetch(WORDLIST_FILE);
         const text = await resp.text();
         const lines = text.split(/\r?\n/);
-        const cleaned = [...new Set(lines.map(w => normalize(w)).filter(w => w))];
+
+        const cleaned = [...new Set(
+            lines.map(w => normalize(w)).filter(w => w)
+        )];
+
         WORDS = cleaned.sort();
         updateStatus();
     } catch (err) {
@@ -46,7 +50,9 @@ async function loadWords() {
 
 function generateRandomLetters() {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    return Array.from({ length: 3 }, () => letters[Math.floor(Math.random() * 26)]).join("");
+    return Array.from({ length: 3 }, () =>
+        letters[Math.floor(Math.random() * 26)]
+    ).join("");
 }
 
 //-------------------------------------------------------------
@@ -58,7 +64,6 @@ async function renderPlate(letters) {
 
     const img = new Image();
     img.src = PLATE_IMAGE_FILE;
-
     await img.decode();
 
     canvas.width = img.width;
@@ -79,11 +84,13 @@ async function renderPlate(letters) {
     ctx.font = `${fontSize}px Arial Black`;
     ctx.fillStyle = "rgb(20,55,125)";
 
-    // Measure characters
     const chars = letters.split("");
     const widths = chars.map(ch => ctx.measureText(ch).width);
     const spacing = -4;
-    const totalWidth = widths.reduce((a, b) => a + b, 0) + spacing * (chars.length - 1);
+
+    const totalWidth =
+        widths.reduce((a, b) => a + b, 0) +
+        spacing * (chars.length - 1);
 
     const startX = x1 + (boxW - totalWidth) / 2 - 25;
     const startY = y1 + (boxH + fontSize) / 2 - 30;
@@ -107,4 +114,78 @@ function getPossibleWords(letters) {
 }
 
 function loadPlateLetters(letters) {
-    CURRENT_LETTERS = letters.to
+    CURRENT_LETTERS = letters.toUpperCase();
+    renderPlate(CURRENT_LETTERS);
+    POSSIBLE = getPossibleWords(CURRENT_LETTERS);
+    updateStatus();
+}
+
+//-------------------------------------------------------------
+// UI Actions
+//-------------------------------------------------------------
+function submitWord() {
+    const input = document.getElementById("wordInput");
+    const w = normalize(input.value);
+    input.value = "";
+
+    if (!w) return;
+
+    if (!WORDS.includes(w)) {
+        alert("Not in dictionary.");
+        return;
+    }
+
+    if (!orderedMatch(w, CURRENT_LETTERS.toLowerCase())) {
+        alert("Word does not match plate order.");
+        return;
+    }
+
+    if (!SUBMITTED.includes(w)) {
+        SUBMITTED.push(w);
+        updateSubmittedList();
+    }
+
+    updateStatus();
+}
+
+function updateSubmittedList() {
+    const ul = document.getElementById("submittedList");
+    ul.innerHTML = "";
+    SUBMITTED.sort().forEach(w => {
+        const li = document.createElement("li");
+        li.textContent = w;
+        ul.appendChild(li);
+    });
+}
+
+function showAnswers() {
+    const div = document.getElementById("results");
+    div.textContent = POSSIBLE.join("\n");
+}
+
+function lookupPlate() {
+    const inp = document.getElementById("lookupInput");
+    const letters = inp.value.toUpperCase().replace(/[^A-Z]/g, "");
+    if (letters.length !== 3) {
+        alert("Enter exactly 3 letters.");
+        return;
+    }
+    loadPlateLetters(letters);
+}
+
+function updateStatus() {
+    const div = document.getElementById("status");
+    div.textContent =
+        `Words loaded: ${WORDS.length} | ` +
+        `Plate: ${CURRENT_LETTERS} | ` +
+        `Possible: ${POSSIBLE.length} | ` +
+        `Submitted: ${SUBMITTED.length}`;
+}
+
+//-------------------------------------------------------------
+// Startup
+//-------------------------------------------------------------
+window.onload = () => {
+    loadWords();
+    loadPlateLetters(generateRandomLetters());
+};
