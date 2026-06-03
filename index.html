@@ -14,15 +14,20 @@
 <!-- Plate Preview -->
 <canvas id="plateCanvas" width="700" height="220" style="border:1px solid #ccc;"></canvas>
 
-<div style="margin-top:8px;">
-    <b>Current letters:</b>
-    <span id="currentLetters">---</span>
+<div style="margin-top:8px;"
+  <span id="currentLetters">---</span>
 </div>
 
 <!-- Word Input -->
-<div style="margin-top:20px;">
-    <label><b>Words you formed / input:</b></label>
-    <input id="wordInput" type="text" style="width:200px;">
+<div style="
+    margin-top:20px;
+    padding:12px;
+    border:3px solid #0033cc;
+    border-radius:10px;
+    display:inline-block;
+">
+    <label><b>Words you formed / input:</b></label><br>
+    <input id="wordInput" type="text" style="width:200px; font-size:20px;">
     <button onclick="submitWord()">Submit</button>
     <button onclick="showAnswers()">Answer</button>
 </div>
