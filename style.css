@@ -1,7 +1,12 @@
 body {
     font-family: Segoe UI, Arial, sans-serif;
     margin: 20px;
+    font-size: 22px;
 }
 h1 {
     color: #0033CC;
+    font-size: 40px;
+}
+h3 {
+    font-size: 28px;
 }
