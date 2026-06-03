@@ -5,9 +5,61 @@
     <title>Keystone</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h1>Keystone</h1>
-    <div id="app"></div>
+
+    <!-- Plate Preview -->
+    <canvas id="plateCanvas" width="700" height="220" style="border:1px solid #ccc;"></canvas>
+    <div style="margin-top:8px;">
+        <b>Current letters:</b> <span id="currentLetters">---</span>
+    </div>
+
+    <!-- Word Input -->
+    <div style="margin-top:20px;">
+        <label><b>Words you formed / input:</b></label>
+        <input id="wordInput" type="text" style="width:200px;">
+        <button onclick="submitWord()">Submit</button>
+        <button onclick="showAnswers()">Answer</button>
+    </div>
+
+    <!-- Random Plate -->
+    <div style="margin-top:10px;">
+        <button onclick="loadPlateLetters(generateRandomLetters())">
+            Generate Random Plate Letters
+        </button>
+    </div>
+
+    <!-- Lookup -->
+    <div style="margin-top:20px;">
+        <label><b>3-Letter Plate Lookup:</b></label>
+        <input id="lookupInput" type="text" style="width:80px;">
+        <button onclick="lookupPlate()">Check / Load Plate</button>
+    </div>
+
+    <!-- Summary -->
+    <div id="summary" style="margin-top:15px; font-size:14px; color:#333;">
+        Ready.
+    </div>
+
+    <!-- Layout -->
+    <div style="display:flex; margin-top:20px; gap:20px;">
+
+        <!-- Submitted Words -->
+        <div style="width:200px;">
+            <h3>Correct Submitted Words</h3>
+            <ul id="submittedList" style="height:300px; overflow-y:auto; border:1px solid #ccc; padding:5px;"></ul>
+        </div>
+
+        <!-- Results -->
+        <div style="flex:1;">
+            <h3>Answer List</h3>
+            <div id="results" style="white-space:pre; border:1px solid #ccc; padding:10px; height:300px; overflow:auto;"></div>
+        </div>
+    </div>
+
+    <!-- Status -->
+    <div id="status" style="margin-top:20px; font-size:12px; color:#555;"></div>
 
     <script src="app.js"></script>
 </body>
